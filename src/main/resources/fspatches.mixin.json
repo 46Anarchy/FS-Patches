@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.6",
+  "package": "dev.anarchy.fspatches.patches.mixin",
+  "refmap": "fspatches.mixin.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockAnvilMixin",
+    "BuilderHelperPatchMixin",
+    "EndPortalMixin"
+  ],
+  "client": [
+    "C00HandshakeMixin",
+    "MinecraftMixin",
+    "ServerAddressMixin",
+    "ServerSessionMixin",
+    "UIMainMenuMixin",
+    "UIPreloaderMixin"
+  ]
+}

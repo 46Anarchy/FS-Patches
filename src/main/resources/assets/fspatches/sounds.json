@@ -1,0 +1,11 @@
+{
+  "music/bg": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "fspatches:music/bg",
+        "stream": true
+      }
+    ]
+  }
+}

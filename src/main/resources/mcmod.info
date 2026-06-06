@@ -1,0 +1,20 @@
+[
+  {
+    "modid": "${modid}",
+    "name": "46Patches",
+    "description": "A bunch of patches to make the Paladium Modpack compatible with non-paladium launchers",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "url": "https://codeberg.org/FRAnarchyDev/FS-patches",
+    "updateUrl": "",
+    "authorList": [
+      "LaCollecteuse"
+    ],
+    "credits": "The Forge and FML guys, Paladium-pvp.fr for the modpack",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": [
+      "palamod"
+    ]
+  }
+]
