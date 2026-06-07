@@ -6,7 +6,8 @@ import net.minecraft.block.material.Material;
 
 @RegisterBlock("test_block")
 public class test extends Block {
-    protected test() {
-        super(Material.air);
+    public test() {
+        super(Material.iron);
+        this.setBlockName("test_block");
     }
 }

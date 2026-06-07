@@ -21,4 +21,16 @@ public class BukkitUtils {
         Location location = new Location(player.getWorld(), pos.x, pos.y, pos.z);
         player.teleport(location);
     }
+
+    @SideOnly(Side.SERVER)
+    @SneakyThrows
+    public static void teleportPlayer(Player player, Vec3d pos)
+    {
+        Location location = new Location(player.getWorld(), pos.x, pos.y, pos.z);
+        player.teleport(location);
+    }
+
+    public static boolean isPlayerOnline(String username) {
+        return Bukkit.getPlayer(username) != null;
+    }
 }
