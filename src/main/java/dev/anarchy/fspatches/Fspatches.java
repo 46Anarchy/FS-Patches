@@ -44,7 +44,7 @@ public class Fspatches {
     public void postInit(FMLPostInitializationEvent event) {
         if (FSAsm.status != CDNSTATUS.OK && FSAsm.status != CDNSTATUS.CDN_FAILURE) {
             System.out.println("[Fspatches] FSPatches updating mods!]");
-            if (event.getSide() == Side.CLIENT && System.getProperties().containsKey("bypass-cdn-need"))
+            if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need"))
                 cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());
         }
     }
