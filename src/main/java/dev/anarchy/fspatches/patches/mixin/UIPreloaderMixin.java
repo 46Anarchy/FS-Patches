@@ -11,6 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(UIPreLoader.class)
 public class UIPreloaderMixin {
@@ -34,6 +37,10 @@ public class UIPreloaderMixin {
         onInitPatch(ci);
     }
 
+    @Inject(method = "checkStatus", at = @At("HEAD"), remap = false, cancellable = true)
+    public void onCheckStatus(CallbackInfoReturnable<CompletableFuture<Boolean>> cir) {
+        cir.setReturnValue(CompletableFuture.completedFuture(true));
+    }
 
     @Redirect(
             method = "postDraw",

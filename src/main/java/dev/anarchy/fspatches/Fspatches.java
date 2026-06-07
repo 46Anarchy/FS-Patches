@@ -30,12 +30,11 @@ public class Fspatches {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        AnnotationScanner.scanItems();
+        AnnotationScanner.scanAll();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        AnnotationScanner.scanBlocks();
         if (Loader.isModLoaded("palamod")) {
             EventRegistry.init();
         }
