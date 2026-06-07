@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.relauncher.Side;
 import dev.anarchy.fspatches.content.command.DiscordCommand;
 import dev.anarchy.fspatches.content.luckyblocks.EventRegistry;
 import dev.anarchy.fspatches.patches.asm.FSAsm;
@@ -29,12 +30,11 @@ public class Fspatches {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        AnnotationScanner.scanItems();
+        AnnotationScanner.scanAll();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        AnnotationScanner.scanBlocks();
         if (Loader.isModLoaded("palamod")) {
             EventRegistry.init();
         }
@@ -43,8 +43,9 @@ public class Fspatches {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (FSAsm.status != CDNSTATUS.OK && FSAsm.status != CDNSTATUS.CDN_FAILURE) {
-        System.out.println("[Fspatches] FSPatches updating mods!]");
-            cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());
+            System.out.println("[Fspatches] FSPatches updating mods!]");
+            if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need"))
+                cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());
         }
     }
 
