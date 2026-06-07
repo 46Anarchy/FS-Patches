@@ -2,3 +2,5 @@ item.stone_KAMIKAZE.name=Legendary Stone du Kamikaze
 item.stone_SPAWN.name=Legendary Stone du Spawm
 item.stone_RANDOM.name=Legendary Stone Aleatoire
 tile.admin_abuse_lucky_block.name=LuckyBlock des Admins
+
+tile.stasis_chamber_block.name=Stasis Chamber
