@@ -31,6 +31,7 @@ public class Fspatches {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         AnnotationScanner.scanAll();
+        clientProxy.init();
     }
 
     @Mod.EventHandler
