@@ -47,6 +47,10 @@ public class Fspatches {
             if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need"))
                 cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());
         }
+
+        if (FSAsm.status == CDNSTATUS.CDN_FAILURE) {
+            System.out.println("[FSPatches] CDN unavailable :(");
+        }
     }
 
     @EventHandler

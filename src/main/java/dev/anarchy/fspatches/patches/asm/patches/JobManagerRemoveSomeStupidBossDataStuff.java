@@ -1,8 +1,6 @@
 package dev.anarchy.fspatches.patches.asm.patches;
 
 import dev.anarchy.fspatches.patches.asm.BasePatch;
-import fr.paladium.common.CommonEventHandler;
-import fr.paladium.palajobs.server.listener.EventsHandler;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;

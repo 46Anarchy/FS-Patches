@@ -6,25 +6,18 @@ import dev.anarchy.fspatches.registering.annotation.RegisterBlock;
 import dev.anarchy.fspatches.registering.annotation.RequiresMod;
 import fr.paladium.palaforgeutils.lib.inventory.InventoryUtils;
 import fr.paladium.palaforgeutils.lib.scheduler.FMLServerScheduler;
-import fr.paladium.palamod.modules.paladium.common.blocks.machine.BlockOnlineDetector;
 import glm.vec._3.d.Vec3d;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPistonBase;
-import net.minecraft.block.BlockRedstoneLight;
-import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import org.bukkit.Bukkit;
-
-import java.util.Random;
 
 @RequiresMod("palamod")
 @RegisterBlock("stasis_chamber_block")

@@ -134,5 +134,5 @@ jar {
 }
 
 jar {
-    archiveName = "fs-patches.jar"
+    archiveName = "fspatches.jar"
 }
