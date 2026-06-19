@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @UtilityClass
 public class FileIntegrity {
 
-    private static final String CDN_URL = "https://cdn.paladium-pvp.fr/games/paladiumv2/paladium.json";
+    private static final String CDN_URL = "https://cdn.46anarchy.fr/manifest.json";
     private static final int MAX_RETRIES = 5;
     private static final int THREADS = Math.max(4, Runtime.getRuntime().availableProcessors());
 
@@ -58,11 +58,12 @@ public class FileIntegrity {
     @SneakyThrows
     private static void downloadLastCDNJson() {
         HttpURLConnection connection = (HttpURLConnection) new URL(CDN_URL).openConnection();
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0");
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
         connection.setRequestMethod("GET");
         connection.connect();
-
+        System.out.println("API Response code: " + connection.getResponseCode());
         if (connection.getResponseCode() != 200)
             throw new IOException("HTTP " + connection.getResponseCode());
 
@@ -79,8 +80,13 @@ public class FileIntegrity {
             fos.write(buffer, 0, read);
     }
 
-    @SneakyThrows
-    public static CDNSTATUS areFilesPresent() {
+
+    private static CDNSTATUS areFilePresentRecursive(int deep) {
+        if (deep >= 20) {
+            System.out.println("Not fucking working after 20 tries, fuck.");
+            return CDNSTATUS.CDN_FAILURE;
+        }
+
         File oldJson = new File(".cdn_last.json");
         File newJson = new File(".cdn_new.json");
 
@@ -88,16 +94,15 @@ public class FileIntegrity {
             try {
                 downloadLastCDNJson();
             } catch (Exception ignored) {
-                return CDNSTATUS.OK;
+                return areFilePresentRecursive(deep + 1); // just try harder lmfao
             }
             return CDNSTATUS.INIT;
         }
 
         try {
             downloadLastCDNJson();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CDNSTATUS.CDN_FAILURE;
+        } catch (Exception ignored) {
+            return areFilePresentRecursive(deep + 1); // just try harder lmfao
         }
 
         if (!newJson.exists() || !isValidCDNFile(newJson))
@@ -109,6 +114,11 @@ public class FileIntegrity {
         }
 
         return CDNSTATUS.OUT_OF_DATE;
+    }
+
+    @SneakyThrows
+    public static CDNSTATUS areFilesPresent() {
+        return areFilePresentRecursive(0);
     }
 
     @SneakyThrows
@@ -252,7 +262,7 @@ public class FileIntegrity {
             }
         }
 
-        if (firstError != null) {
+        if (firstError != null && System.getProperty("bypass-cdn-need") != null) {
             for (DownloadFile file : files) {
                 File tmp = new File(file.getDestination().getAbsolutePath() + ".tmp");
                 if (tmp.exists())
@@ -322,6 +332,7 @@ public class FileIntegrity {
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(30000);
         connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0");
         connection.connect();
 
         if (connection.getResponseCode() != 200)

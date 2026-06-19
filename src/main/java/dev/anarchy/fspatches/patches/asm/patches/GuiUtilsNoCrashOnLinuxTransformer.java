@@ -19,7 +19,8 @@ public class GuiUtilsNoCrashOnLinuxTransformer extends BasePatch {
     private static final String TARGET = "fr.paladium.lib.apollon.utils.GuiUtils";
     private static final String TARGET_INTERNAL = "fr/paladium/lib/apollon/utils/GuiUtils";
     private static final String SELF_INTERNAL =
-            "dev/anarchy/fspatches/asm/patches/GuiUtilsNoCrashOnLinuxTransformer";
+            "dev/anarchy/fspatches/patches/asm/patches/GuiUtilsNoCrashOnLinuxTransformer";
+
 
     public static void linuxCompliantURLOpener(String url) {
         try {

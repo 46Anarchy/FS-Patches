@@ -1,5 +1,13 @@
 package dev.anarchy.fspatches.proxies;
 
-public class CommonProxy {
+import net.minecraftforge.common.MinecraftForge;
 
+public class CommonProxy {
+    public CommonProxy() {
+
+    }
+
+    public void init() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 }

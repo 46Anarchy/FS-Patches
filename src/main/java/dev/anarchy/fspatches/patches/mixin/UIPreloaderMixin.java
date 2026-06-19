@@ -1,9 +1,11 @@
 package dev.anarchy.fspatches.patches.mixin;
 
+import fr.paladium.palamod.modules.paladium.client.gui.palamenu.mainmenu.UIMainMenu;
 import fr.paladium.palamod.modules.paladium.client.gui.palamenu.preloader.UIPreLoader;
 import fr.paladium.zephyrui.lib.draw.DrawUtils;
 import fr.paladium.zephyrui.lib.draw.resource.DrawResource;
 import fr.paladium.zephyrui.lib.resource.Resource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,8 +30,10 @@ public class UIPreloaderMixin {
     public void onInitPatch(CallbackInfo ci) {
         BACKGROUND_TEXTURE = Resource.of(new ResourceLocation("fspatches", "textures/background/play.png"));
         LOGO_TEXTURE = Resource.of(new ResourceLocation("fspatches", "textures/logo.png"));
-//        UIMainMenu.loaded = true;
-//        Minecraft.getMinecraft().displayGuiScreen(new UIMainMenu());
+        if (System.getProperty("bypass-cdn-need") != null) {
+            UIMainMenu.loaded = true;
+            Minecraft.getMinecraft().displayGuiScreen(new UIMainMenu());
+        }
     }
 
     @Inject(method = "init", at = @At("TAIL"), remap = false)

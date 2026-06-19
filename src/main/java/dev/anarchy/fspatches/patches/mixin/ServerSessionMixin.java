@@ -27,7 +27,7 @@ public class ServerSessionMixin {
     public void onInitPatch(String host, int port, Consumer callback, CallbackInfo ci) {
         this.port = 25566;
         if (!host.equalsIgnoreCase("localhost") && !host.equalsIgnoreCase("127.0.0.1"))
-            this.host = "minecraft.tuturprdev.xyz";
+            this.host = "mc.46anarchy.fr";
     }
 }
 

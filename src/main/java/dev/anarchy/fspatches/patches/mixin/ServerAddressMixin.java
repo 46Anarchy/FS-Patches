@@ -18,7 +18,7 @@ abstract class ServerAddressMixin {
     @Inject(method = "getIP", at = @At("HEAD"), cancellable = true)
     private void getIPPatch(CallbackInfoReturnable<String> cir) {
         if (ipAddress.equalsIgnoreCase("localhost") && !ipAddress.equalsIgnoreCase("127.0.0.1"))
-            cir.setReturnValue("minecraft.tuturprdev.xyz");
+            cir.setReturnValue("mc.46anarchy.fr");
     }
 
     @Inject(method = "getPort", at = @At("HEAD"), cancellable = true)
