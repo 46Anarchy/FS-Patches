@@ -2,16 +2,20 @@ package dev.anarchy.fspatches.content.blocks;
 
 import dev.anarchy.fspatches.patches.utils.BukkitUtils;
 import dev.anarchy.fspatches.registering.AnnotationScanner;
+import dev.anarchy.fspatches.registering.FSRecipe;
+import dev.anarchy.fspatches.registering.ICraftable;
 import dev.anarchy.fspatches.registering.annotation.RegisterBlock;
 import dev.anarchy.fspatches.registering.annotation.RequiresMod;
 import fr.paladium.palaforgeutils.lib.inventory.InventoryUtils;
 import fr.paladium.palaforgeutils.lib.scheduler.FMLServerScheduler;
+import fr.paladium.palamod.api.ItemsRegister;
 import glm.vec._3.d.Vec3d;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -21,7 +25,7 @@ import org.bukkit.Bukkit;
 
 @RequiresMod("palamod")
 @RegisterBlock("stasis_chamber_block")
-public class StasisChamberBlock extends Block {
+public class StasisChamberBlock extends Block implements ICraftable {
 
     private final IIcon[] textures = new IIcon[4];
 
@@ -107,6 +111,15 @@ public class StasisChamberBlock extends Block {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public FSRecipe getRecipe() {
+        return new FSRecipe().setRecipe(new ItemStack[][]{
+                {new ItemStack(ItemsRegister.PALADIUM_INGOT), new ItemStack(Items.redstone), new ItemStack(ItemsRegister.PALADIUM_INGOT)},
+                {new ItemStack(Items.redstone),               new ItemStack(Items.ender_pearl), new ItemStack(Items.redstone)},
+                {new ItemStack(ItemsRegister.PALADIUM_INGOT), new ItemStack(Items.redstone), new ItemStack(ItemsRegister.PALADIUM_INGOT)},
+        });
     }
 
     public static class StasisChamberTileEntity extends TileEntity {

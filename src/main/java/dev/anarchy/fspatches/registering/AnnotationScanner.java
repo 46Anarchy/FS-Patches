@@ -8,6 +8,7 @@ import dev.anarchy.fspatches.registering.annotation.RequiresMod;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -65,6 +66,10 @@ public class AnnotationScanner {
             Item item = (Item) clazz.newInstance();
             GameRegistry.registerItem(item, name);
             ITEMS.put(name, item);
+
+            if (ICraftable.class.isAssignableFrom(clazz))
+                GameRegistry.addRecipe(new ItemStack(item), ((ICraftable)item).getRecipe().toMinecraft());
+
             System.out.println("[FSPatches] Item enregistré : " + name);
         } catch (Exception e) {
             System.out.println("[FSPatches] Echec item : " + name);
@@ -77,6 +82,10 @@ public class AnnotationScanner {
             Block block = (Block) clazz.newInstance();
             GameRegistry.registerBlock(block, itemBlockClass, name);
             BLOCKS.put(name, block);
+
+            if (ICraftable.class.isAssignableFrom(clazz))
+                GameRegistry.addRecipe(new ItemStack(block), ((ICraftable)block).getRecipe().toMinecraft());
+
             System.out.println("[FSPatches] Block enregistré : " + name);
         } catch (Exception e) {
             System.out.println("[FSPatches] Echec block : " + name);
