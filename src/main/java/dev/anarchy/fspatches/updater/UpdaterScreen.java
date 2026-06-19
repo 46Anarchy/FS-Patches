@@ -159,8 +159,11 @@ public class UpdaterScreen extends GuiScreen {
         drawCenteredString(this.fontRendererObj, "FSPatches", centerX, centerY - 110, 0xFFFFFF);
 
         if (state == -1) {
-            drawCenteredString(fontRendererObj, "Le CDN de Paladium est indisponible.", centerX, centerY - 70, 0xFF5555);
-            drawCenteredString(fontRendererObj, "C'est un probleme de Paladium, merci d'attendre.", centerX, centerY - 55, 0x777777);
+            drawCenteredString(fontRendererObj, "Vous n'avez pas l'air d'avoir acces a notre CDN.", centerX, centerY - 70, 0xFF5555);
+            drawCenteredString(fontRendererObj, "C'est un probleme connu lie a notre hebergeur qui a un anti-ddos aggressif.", centerX, centerY - 55, 0x777777);
+            drawCenteredString(fontRendererObj, "Utilisez un autre launcher et si va ne marche toujours pas,", centerX, centerY - 40, 0x777777);
+            drawCenteredString(fontRendererObj, "contactez nous sur discord avec votre IP et autres info additionnelles.", centerX, centerY - 25, 0x777777);
+            drawCenteredString(fontRendererObj, "Utiliser un VPN / proxy residentiel pourrait aider, mais cette methode n'a pas ete teste.", centerX, centerY - 10, 0x777777);
         } else if (state == 0) {
             drawCenteredString(fontRendererObj, "Une mise a jour du modpack est necessaire.", centerX, centerY - 70, 0xAAAAAA);
             drawCenteredString(fontRendererObj, "FSPatches depend du modpack Paladium.", centerX, centerY - 55, 0x555555);
@@ -214,9 +217,9 @@ public class UpdaterScreen extends GuiScreen {
             drawCenteredString(fontRendererObj, "telecharge : " + FileIntegrity.getDownloadedFileCount() + "/" + total + "  (" + FileIntegrity.getCurrentDownloads().size() + " en cours)", centerX, this.height - 12, 0x444444);
         }
 
-        fontRendererObj.drawString("FSPatches v1.0.0", 8, this.height - 8, 0x333333);
+        fontRendererObj.drawString("FSPatches v1.0.0", 8, this.height - 12, 0x333333);
         String mcVer = "Minecraft 1.7.10";
-        fontRendererObj.drawString(mcVer, this.width - fontRendererObj.getStringWidth(mcVer) - 8, this.height - 8, 0x333333);
+        fontRendererObj.drawString(mcVer, this.width - fontRendererObj.getStringWidth(mcVer) - 8, this.height - 12, 0x333333);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

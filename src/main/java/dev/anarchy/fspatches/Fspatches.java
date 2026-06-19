@@ -30,6 +30,7 @@ public class Fspatches {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        System.out.println("CTRLF FSPatches Version " + Fspatches.VERSION);
         AnnotationScanner.scanAll();
         clientProxy.init();
     }
@@ -43,7 +44,7 @@ public class Fspatches {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (FSAsm.status != CDNSTATUS.OK && FSAsm.status != CDNSTATUS.CDN_FAILURE) {
+        if (FSAsm.status != CDNSTATUS.OK) {
             System.out.println("[Fspatches] FSPatches updating mods!]");
             if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need"))
                 cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());

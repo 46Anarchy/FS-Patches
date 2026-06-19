@@ -1,12 +1,14 @@
 package dev.anarchy.fspatches.updater;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import scala.concurrent.util.Unsafe;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -47,12 +49,12 @@ public class FileIntegrity {
 
         byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
         byte[] hash = MessageDigest.getInstance("SHA1").digest(data);
-        String sha1 = new BigInteger(1, hash).toString(16);
+        StringBuilder sha1 = new StringBuilder(new BigInteger(1, hash).toString(16));
 
         while (sha1.length() < 40)
-            sha1 = "0" + sha1;
+            sha1.insert(0, "0");
 
-        return sha1;
+        return sha1.toString();
     }
 
     @SneakyThrows
@@ -137,7 +139,29 @@ public class FileIntegrity {
 
     @SneakyThrows
     public static List<DownloadFile> buildDownloadList(File manifestFile, File gameDirectory) {
-        Manifest manifest = new Gson().fromJson(new FileReader(manifestFile), Manifest.class);
+        Manifest manifest;
+
+
+        try {
+            manifest = new Gson().fromJson(new FileReader(manifestFile), Manifest.class);
+        } catch (JsonSyntaxException | JsonIOException e) {
+            System.out.println("CTRLF Manifest is invalid: ");
+            FileReader reader = new FileReader(manifestFile);
+            int read = 0;
+            StringBuilder str = new StringBuilder();
+            while(read != -1) {
+                char[] buffer = new char[1];
+                read = reader.read(buffer);
+                str.append(buffer[0]);
+            }
+            System.out.println(str);
+            Unsafe.instance.getAddress(0L);
+            System.exit(-1);
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) { // oh well, too bad. Should probably throw anyway
+            System.out.println("[FSPatches] Could not find manifest file ! This is very bad and we're not letting you continue. Please report this error.");
+            throw e;
+        }
 
         Map<String, Model> modelMap = new HashMap<>();
         if (manifest.models != null)
@@ -185,7 +209,29 @@ public class FileIntegrity {
         if (!manifestFile.exists())
             return false;
 
-        Manifest manifest = new Gson().fromJson(new FileReader(manifestFile), Manifest.class);
+        Manifest manifest;
+
+        try {
+            manifest = new Gson().fromJson(new FileReader(manifestFile), Manifest.class);
+        } catch (JsonSyntaxException | JsonIOException e) {
+            System.out.println("CTRLF Manifest is invalid: ");
+            FileReader reader = new FileReader(manifestFile);
+            int read = 0;
+            StringBuilder str = new StringBuilder();
+            while(read != -1) {
+                char[] buffer = new char[1];
+                read = reader.read(buffer);
+                str.append(buffer[0]);
+            }
+            System.out.println(str);
+            System.exit(-1);
+            Unsafe.instance.getAddress(0L);
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) { // oh well, too bad. Should probably throw anyway
+            System.out.println("[FSPatches] Could not find manifest file ! This is very bad and we're not letting you continue. Please report this error.");
+            throw e;
+        }
+
         if (manifest == null || manifest.models == null || manifest.files == null)
             return false;
 

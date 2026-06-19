@@ -16,9 +16,6 @@ public class UpdaterTickHandler {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc == null) return;
 
-        tickDelay++;
-        if (tickDelay < 10) return;
-
         triggered = true;
         mc.displayGuiScreen(new UpdaterScreen());
     }
