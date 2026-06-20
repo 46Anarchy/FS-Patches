@@ -17,7 +17,10 @@ import dev.anarchy.fspatches.proxies.CommonProxy;
 import dev.anarchy.fspatches.registering.AnnotationScanner;
 import dev.anarchy.fspatches.updater.CDNSTATUS;
 import dev.anarchy.fspatches.updater.UpdaterTickHandler;
+import fr.paladium.homemod.client.HomeClientProxy;
 import fr.paladium.palaforgeutils.lib.command.annotated.registry.CommandRegistry;
+import fr.paladium.palamod.modules.back2future.Back2Future;
+import fr.paladium.palamod.modules.back2future.ModEnchantments;
 
 
 @Mod(modid = Fspatches.MODID, version = Fspatches.VERSION)
@@ -49,6 +52,9 @@ public class Fspatches {
             if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need"))
                 cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());
         }
+
+        if (event.getSide() == Side.SERVER)
+            Back2Future.enableFrostWalker = false;
 
         if (FSAsm.status == CDNSTATUS.CDN_FAILURE) {
             System.out.println("[FSPatches] CDN unavailable :(");
