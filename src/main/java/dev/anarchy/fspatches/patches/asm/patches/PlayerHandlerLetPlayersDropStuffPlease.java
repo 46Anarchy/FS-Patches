@@ -3,11 +3,12 @@ package dev.anarchy.fspatches.patches.asm.patches;
 import dev.anarchy.fspatches.patches.asm.BasePatch;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodNode;
 
-import java.awt.*;
-
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.RETURN;
 
 // patch for the GuiUtils class that prevent the game from crashing
 // when trying to open the browser on Linux because this is not a supported

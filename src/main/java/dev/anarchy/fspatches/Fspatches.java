@@ -17,10 +17,8 @@ import dev.anarchy.fspatches.proxies.CommonProxy;
 import dev.anarchy.fspatches.registering.AnnotationScanner;
 import dev.anarchy.fspatches.updater.CDNSTATUS;
 import dev.anarchy.fspatches.updater.UpdaterTickHandler;
-import fr.paladium.homemod.client.HomeClientProxy;
 import fr.paladium.palaforgeutils.lib.command.annotated.registry.CommandRegistry;
 import fr.paladium.palamod.modules.back2future.Back2Future;
-import fr.paladium.palamod.modules.back2future.ModEnchantments;
 
 
 @Mod(modid = Fspatches.MODID, version = Fspatches.VERSION)

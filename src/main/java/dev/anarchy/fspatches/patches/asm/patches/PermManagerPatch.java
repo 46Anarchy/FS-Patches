@@ -27,7 +27,7 @@ public class PermManagerPatch extends BasePatch {
 
                 String owner = "fr/paladium/factions/server/permissions/PermManager";
                 String providerDesc = "Lfr/paladium/factions/server/permissions/IPermissionProvider;";
-                String defaultProvDesc = "fr/paladium/factions/server/permissions/DefaultPermProvider";
+                String defaultProvDesc = "dev/anarchy/fspatches/content/misc/FsPermissionProvider";
                 String loggerOwner = "fr/paladium/factions/FactionLogger";
 
                 insn.add(new FieldInsnNode(Opcodes.GETSTATIC, owner, "provider", providerDesc));
