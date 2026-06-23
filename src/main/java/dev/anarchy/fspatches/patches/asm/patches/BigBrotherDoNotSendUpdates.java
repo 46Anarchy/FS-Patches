@@ -10,14 +10,9 @@ import org.objectweb.asm.tree.MethodNode;
 
 import static org.objectweb.asm.Opcodes.RETURN;
 
-// patch to remove a now unused dupe detection method in the Storage Drawers mod.
-// it works by taking the DrawerBlocks#alert method and replacing it by a return instruction.
-public class BlockDrawersDontKickOnInteractions extends BasePatch {
+public class BigBrotherDoNotSendUpdates extends BasePatch {
 
-    private static final String TARGET = "com.jaquadro.minecraft.storagedrawers.block.BlockDrawers";
-    private static final String TARGET_INTERNAL = "com/jaquadro/minecraft/storagedrawers/block/BlockDrawers";
-    private static final String SELF_INTERNAL =
-            "dev/anarchy/fspatches/asm/patches/BlockDrawersDontKickOnInteractions";
+    private static final String TARGET = "fr.paladium.palamod.modules.paladynamique.PPalaDynamique";
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
@@ -32,15 +27,13 @@ public class BlockDrawersDontKickOnInteractions extends BasePatch {
 
         boolean patched = false;
         for (MethodNode method : node.methods) {
-            if (method.name.equals("alert")) {
+            if (method.name.equals("addGenerated") || method.name.equals("addDestroyed")) {
                 method.instructions.clear();
                 method.tryCatchBlocks.clear();
 
                 InsnList insn = new InsnList();
                 insn.add(new InsnNode(RETURN));
                 method.instructions.add(insn);
-                method.maxStack = 2;
-                method.maxLocals = 0;
                 patched = true;
             }
         }
@@ -48,7 +41,7 @@ public class BlockDrawersDontKickOnInteractions extends BasePatch {
         if (!patched)
             return basicClass;
 
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
     }

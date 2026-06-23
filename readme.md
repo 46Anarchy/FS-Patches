@@ -101,3 +101,4 @@ Une fois la compilation terminée, le fichier `.jar` généré sera disponible d
 - ajout de trois legendary stones custom
 - rewrite complet du systeme de luckyblocks
 - ajout de luckyblocks custom (non craftable pour le moment)
+- ajout de la stasis chamber
