@@ -43,12 +43,28 @@ public class Fspatches {
         }
     }
 
+	public void littleBoxToCallPeopleStupid() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Erreur");
+        alert.setHeaderText("ATTENTION !");
+        alert.setContentText("Comme dit dans le tutoriel, il ne faut pas mettre Loki (ou tout autre cheat)\ndans votre dossier \"mods\" avant d'avoir fait une installation propre du modpack !\nmerci de retirer TOUT AUTRE MODS QUE FSPATCH avant de redemarrer le jeu !");
+        alert.showAndWait();
+	}
+
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (FSAsm.status != CDNSTATUS.OK) {
             System.out.println("[Fspatches] FSPatches updating mods!]");
-            if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need"))
+            if (event.getSide() == Side.CLIENT && !System.getProperties().containsKey("bypass-cdn-need")) {
+
+				// all of that because people are too stupid to follow a 6 lines tutorial
+				if (Class.forName("fr.paladium.zephyui.lib.ui.core.UI") == null && Class.forName("fr.paladium.LokiClient") != null) {
+					littleBoxToCallPeopleStupid();
+					System.exit(1);
+				}
+
                 cpw.mods.fml.common.FMLCommonHandler.instance().bus().register(new UpdaterTickHandler());
+			}
         }
 
         if (event.getSide() == Side.SERVER)

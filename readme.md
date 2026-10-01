@@ -78,6 +78,10 @@ Une fois la compilation terminée, le fichier `.jar` généré sera disponible d
 ./build/libs
 ```
 
+apres coup, mettez fs-patches dans le dossier mods de votre instance Minecraft 1.7.10.
+
+*note : le dernier commit de la branche main est celui qu'on utilise sur le serveur 46anarchy donc vous pouvez utiliser votre build custom pour rejoindre le serveur, ou meme un fork si les patchs sont a jour*
+
 ### Patch list
 
 - regle le jeu qui crash en essayant d'ouvrir un navigateur web (sur linux, pour de bon)
