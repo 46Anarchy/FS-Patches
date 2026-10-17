@@ -44,10 +44,12 @@ public class DesktopBrowseSysOpenUrlPatch extends BasePatch {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (basicClass == null) return null;
-        // Java 8 players keep the original classes untouched (see ModernRuntime).
-        if (!ModernRuntime.isLwjgl3ify()) return basicClass;
+        // Match the targets first: calling into ModernRuntime while it is itself being
+        // transformed re-enters the class loader and dies with ClassCircularityError.
         boolean palamodUtils = PALAMOD_UTILS.equals(transformedName);
         if (!LOCKED_NODE.equals(transformedName) && !palamodUtils) return basicClass;
+        // Java 8 players keep the original classes untouched (see ModernRuntime).
+        if (!ModernRuntime.isLwjgl3ify()) return basicClass;
         ClassNode node = new ClassNode();
         new ClassReader(basicClass).accept(node, 0);
         boolean patched = false;

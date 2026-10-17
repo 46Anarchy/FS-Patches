@@ -4,9 +4,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import dev.anarchy.fspatches.updater.CDNSTATUS;
 import dev.anarchy.fspatches.updater.FileIntegrity;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // Sometime, just sometime, mixins aren't enough
 // and that's when things get REALLY ugly even for Java standards
@@ -18,8 +16,12 @@ public class FSAsm implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        if (status == CDNSTATUS.NOTHING_YET)
-            status = FileIntegrity.areFilesPresent();
+		try {
+        	if (status == CDNSTATUS.NOTHING_YET)
+            	status = FileIntegrity.areFilesPresent();
+		} catch (Throwable t) {
+			// Best-effort CDN probe; a missing class here must never abort the launch.
+		}
     }
 
     @Override
