@@ -34,16 +34,28 @@ public class SpawnLegendaryStone extends AbstractCustomLegendaryStone {
         double posY = getIntTopBlock(world, (int)posX, (int)posZ);
 
         try {
-            for(int tryCount = 0; !EventUtils.canInteract(entityPlayer, (int)posX, (int)posY, (int)posZ); ++tryCount) {
-                if (tryCount >= 10) {
-                    entityPlayer.addChatComponentMessage(new ChatComponentText("§8[§6Paladium§8] §7Une chose étrange est arrivée, la téléportation n'a pas fonctionné !"));
+            boolean canInteract = false;
+
+            for (int tryCount = 0; tryCount < 10; ++tryCount) {
+                if (EventUtils.canInteract(entityPlayer, (int)posX, (int)posY, (int)posZ)) {
+                    canInteract = true;
+                    break;
                 }
 
                 posX = r.nextInt(500) + -250;
                 posZ = r.nextInt(500) + -250;
                 posY = getIntTopBlock(world, (int)posX, (int)posZ);
             }
-        } catch (Exception ignored) {}
+
+            if (!canInteract) {
+                // Bounded to 10 attempts. The old loop re-rolled forever and
+                // spammed this message once per iteration (plus forced chunk loads).
+                entityPlayer.addChatComponentMessage(new ChatComponentText("§8[§6Paladium§8] §7Une chose étrange est arrivée, la téléportation n'a pas fonctionné !"));
+                return itemStack;
+            }
+        } catch (Exception ignored) {
+            // Legacy behaviour: on API errors, fall through and teleport anyway.
+        }
 
         BukkitUtils.teleportPlayer(entityPlayer, new Vec3d(posX, posY, posZ));
 

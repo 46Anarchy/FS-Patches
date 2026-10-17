@@ -25,6 +25,13 @@ public class UpdaterScreen extends GuiScreen {
     private Thread downloadThread;
     private ISound currentMusic;
 
+    /** Ticks between keepalive work (the old code did reflection + sound retry every tick). */
+    private int keepAliveTicks;
+    /** Cached MusicTicker reflection; resolved once instead of per tick. */
+    private static Field musicTickerField;
+    private static Field musicTickerTimeField;
+    private static boolean musicTickerResolved;
+
     private static final ResourceLocation BACKGROUND =
             new ResourceLocation("fspatches", "textures/background/settings.png");
 
@@ -58,29 +65,60 @@ public class UpdaterScreen extends GuiScreen {
     public void updateScreen() {
         super.updateScreen();
 
+        // Throttled to once a second: the old code re-walked Minecraft's declared
+        // fields via reflection and re-issued the background music 20x/s. The
+        // music ticker counts down from Integer.MAX_VALUE, so re-pinning it once
+        // a second is plenty, and the retry can safely be 1x/s instead of 20x/s.
+        if (++keepAliveTicks < 20) {
+            return;
+        }
+        keepAliveTicks = 0;
+
         blockVanillaMusic();
 
-        if (this.currentMusic != null && !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(this.currentMusic))
-            Minecraft.getMinecraft().getSoundHandler().playSound(this.currentMusic);
+        if (this.currentMusic != null && !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(this.currentMusic)) {
+            try {
+                Minecraft.getMinecraft().getSoundHandler().playSound(this.currentMusic);
+            } catch (Exception ignored) {
+                // SoundManager's HashBiMap rejects re-queueing an instance that is
+                // already registered ("value already present" crash — see
+                // boottest/crash-reports/crash-2026-10-13_14.27.39-client.txt).
+                // Skip this retry; the next one happens a second later.
+            }
+        }
     }
 
     private void blockVanillaMusic() {
         try {
             Minecraft mc = Minecraft.getMinecraft();
-            for (Field field : mc.getClass().getDeclaredFields()) {
-                if (field.getType().getName().contains("MusicTicker")) {
-                    field.setAccessible(true);
-                    Object ticker = field.get(mc);
 
+            if (!musicTickerResolved) {
+                for (Field field : mc.getClass().getDeclaredFields()) {
+                    if (field.getType().getName().contains("MusicTicker")) {
+                        musicTickerField = field;
+                        musicTickerField.setAccessible(true);
+                        break;
+                    }
+                }
+                if (musicTickerField != null) {
+                    Object ticker = musicTickerField.get(mc);
                     if (ticker != null) {
                         for (Field tickerField : ticker.getClass().getDeclaredFields()) {
                             if (tickerField.getType() == int.class) {
-                                tickerField.setAccessible(true);
-                                tickerField.setInt(ticker, Integer.MAX_VALUE);
-                                return;
+                                musicTickerTimeField = tickerField;
+                                musicTickerTimeField.setAccessible(true);
+                                break;
                             }
                         }
                     }
+                }
+                musicTickerResolved = musicTickerField != null && musicTickerTimeField != null;
+            }
+
+            if (musicTickerResolved) {
+                Object ticker = musicTickerField.get(mc);
+                if (ticker != null) {
+                    musicTickerTimeField.setInt(ticker, Integer.MAX_VALUE);
                 }
             }
         } catch (Exception ignored) {}
