@@ -1,13 +1,11 @@
 package dev.anarchy.fspatches.patches.asm.patches;
 
 import dev.anarchy.fspatches.patches.asm.BasePatch;
-import dev.anarchy.fspatches.patches.asm.ModernRuntime;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
 
-import java.lang.reflect.Method;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -33,7 +31,7 @@ import static org.objectweb.asm.Opcodes.*;
  *
  * <p>Les appels explicites (thread de rendu) ne sont pas touchés. Comme les
  * autres correctifs du runtime moderne, tout est conditionné à
- * {@link ModernRuntime#isLwjgl3ify()} : sur le classique Java 8 les classes
+ * {@link BasePatch#lwjgl3ifyRuntime()} : sur le classique Java 8 les classes
  * sont rendues telles quelles.
  */
 public class ZephyrGlFinalizeSafePatch extends BasePatch {
@@ -62,38 +60,15 @@ public class ZephyrGlFinalizeSafePatch extends BasePatch {
     private static final Queue<Object> PENDING_DELETE = new ConcurrentLinkedQueue<Object>();
     private static final Queue<Integer> PENDING_TEXTURE = new ConcurrentLinkedQueue<Integer>();
 
-    private static Method glCapabilities;
-    private static boolean glCapabilitiesResolved;
     private static boolean loggedSkip;
     private static boolean loggedError;
-
-    /** Contexte GL courant sur CE thread ? ({@code false} hors LWJGL3 aussi). */
-    public static boolean hasContext() {
-        if (!glCapabilitiesResolved) {
-            glCapabilitiesResolved = true;
-            try {
-                glCapabilities =
-                        Class.forName("org.lwjgl.opengl.GL").getMethod("getCapabilities");
-            } catch (Throwable ignored) {
-                glCapabilities = null;
-            }
-        }
-        if (glCapabilities == null) {
-            return false;
-        }
-        try {
-            return glCapabilities.invoke(null) != null;
-        } catch (Throwable ignored) {
-            return false;
-        }
-    }
 
     /** Remplace {@code ResourceData.clear()} dans {@code finalize()}. */
     public static void deferClear(fr.paladium.zephyrui.lib.resource.dto.ResourceData data) {
         if (data == null) {
             return;
         }
-        if (hasContext()) {
+        if (glContextPresent()) {
             try {
                 data.clear();
             } catch (Throwable t) {
@@ -113,7 +88,7 @@ public class ZephyrGlFinalizeSafePatch extends BasePatch {
         if (framebuffer == null) {
             return;
         }
-        if (hasContext()) {
+        if (glContextPresent()) {
             try {
                 framebuffer.delete();
             } catch (Throwable t) {
@@ -133,7 +108,7 @@ public class ZephyrGlFinalizeSafePatch extends BasePatch {
         if (textureId == -1) {
             return;
         }
-        if (hasContext()) {
+        if (glContextPresent()) {
             try {
                 TextureUtil.deleteTexture(textureId);
             } catch (Throwable t) {
@@ -157,7 +132,7 @@ public class ZephyrGlFinalizeSafePatch extends BasePatch {
         if (PENDING_CLEAR.isEmpty() && PENDING_DELETE.isEmpty() && PENDING_TEXTURE.isEmpty()) {
             return;
         }
-        if (!hasContext()) {
+        if (!glContextPresent()) {
             return;
         }
         Object pending;
@@ -205,13 +180,15 @@ public class ZephyrGlFinalizeSafePatch extends BasePatch {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (basicClass == null) return null;
-        // Java 8 : comportement LWJGL2 d'origine (voir ModernRuntime).
-        if (!ModernRuntime.isLwjgl3ify()) return basicClass;
+        // Cibler d'abord (la sonde ne charge plus aucune classe, voir
+        // BasePatch) : on ne sonde pas le runtime pour chaque classe du pack.
         if (!RESOURCE_DATA.equals(transformedName)
                 && !FRAME_BUFFER.equals(transformedName)
                 && !ASYNC_RESOURCE_LOCATION.equals(transformedName)) {
             return basicClass;
         }
+        // Java 8 : comportement LWJGL2 d'origine (voir BasePatch).
+        if (!lwjgl3ifyRuntime()) return basicClass;
         ClassNode node = new ClassNode();
         new ClassReader(basicClass).accept(node, 0);
         boolean patched = false;

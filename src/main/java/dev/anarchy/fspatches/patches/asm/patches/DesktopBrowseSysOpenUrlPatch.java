@@ -1,7 +1,6 @@
 package dev.anarchy.fspatches.patches.asm.patches;
 
 import dev.anarchy.fspatches.patches.asm.BasePatch;
-import dev.anarchy.fspatches.patches.asm.ModernRuntime;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
@@ -44,12 +43,11 @@ public class DesktopBrowseSysOpenUrlPatch extends BasePatch {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (basicClass == null) return null;
-        // Match the targets first: calling into ModernRuntime while it is itself being
-        // transformed re-enters the class loader and dies with ClassCircularityError.
+        // Cibler d'abord : la sonde vit dans BasePatch (forcément déjà chargée).
         boolean palamodUtils = PALAMOD_UTILS.equals(transformedName);
         if (!LOCKED_NODE.equals(transformedName) && !palamodUtils) return basicClass;
-        // Java 8 players keep the original classes untouched (see ModernRuntime).
-        if (!ModernRuntime.isLwjgl3ify()) return basicClass;
+        // Java 8 players keep the original classes untouched (see BasePatch).
+        if (!lwjgl3ifyRuntime()) return basicClass;
         ClassNode node = new ClassNode();
         new ClassReader(basicClass).accept(node, 0);
         boolean patched = false;
