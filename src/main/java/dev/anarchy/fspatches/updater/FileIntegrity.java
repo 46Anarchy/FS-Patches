@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @UtilityClass
 public class FileIntegrity {
 
-    private static final String CDN_URL = "https://cdn.46anarchy.fr/manifest.json";
+    private static final String CDN_URL = "https://dl.46anarchy.fr/manifest.json";
     private static final int MAX_RETRIES = 5;
     private static final int THREADS = Math.max(4, Runtime.getRuntime().availableProcessors());
 

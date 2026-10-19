@@ -14,7 +14,7 @@ Ce projet a été créé et est maintenu par La Collecteuse et Anakoni.
 
 ## Utilisation
 
-1. Téléchargez la dernière version notre serveur de distribution (https://cdn.46anarchy.fr/files/mods/fspatches.jar)
+1. Téléchargez la dernière version notre serveur de distribution (https://dl.46anarchy.fr/files/mods/fspatches.jar)
 2. Placez le fichier `.jar` téléchargé dans le dossier `mods` d'une instance Minecraft avec forge 1.7.10.
 
 Une fois installé, le mod applique automatiquement ses correctifs au démarrage. Aucune configuration supplémentaire n’est requise.
