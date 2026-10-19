@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import dev.anarchy.fspatches.content.command.DiscordCommand;
 import dev.anarchy.fspatches.content.luckyblocks.EventRegistry;
 import dev.anarchy.fspatches.patches.asm.FSAsm;
+import dev.anarchy.fspatches.patches.listener.ZephyrGlDrainHandler;
 import dev.anarchy.fspatches.patches.utils.JobCustomizer;
 import dev.anarchy.fspatches.proxies.CommonProxy;
 import dev.anarchy.fspatches.registering.AnnotationScanner;
@@ -40,6 +41,13 @@ public class Fspatches {
     public void init(FMLInitializationEvent event) {
         if (Loader.isModLoaded("palamod")) {
             EventRegistry.init();
+        }
+        if (event.getSide() == Side.CLIENT) {
+            // Les finalizers ZephyrUI mettent leurs suppressions GL en file
+            // (voir ZephyrGlFinalizeSafePatch) ; on vide la file au tick client,
+            // seul moment où le contexte GL est courant.
+            cpw.mods.fml.common.FMLCommonHandler.instance().bus()
+                    .register(new ZephyrGlDrainHandler());
         }
     }
 
